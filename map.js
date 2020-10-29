@@ -8,7 +8,7 @@ async function drawMap(){
     const colorData = {
         'Wii' : '#f45d51',
         'DS' : '#3a3e70',
-        'X360' : '#e2F4FF',
+        'X360' : '#9bb948',
         'GB' : '#97b5cc',
         'PS3' : '#374667',
         'NES' : '#63cace',
@@ -31,7 +31,6 @@ async function drawMap(){
         width: window.innerWidth * 0.9 <= 600 ? window.innerWidth * 0.9 : 1100,
         height: 500,
     }
-
 
     //3) Draw Canvas 
 
@@ -62,14 +61,19 @@ async function drawMap(){
     const createTreeMap = d3.treemap()
                             .size([dimensions.width,dimensions.height])
 
+    
+    createTreeMap(hierarchy)
+
     //5) Draw Data
     //selecting tooltip
 
     const tooltip = d3.select('#tooltip');
 
-    //drawing data
+    //setting transition 
 
-    createTreeMap(hierarchy)
+    const updateTransition = d3.transition().duration(1000);
+
+    //drawing data
 
     const gamesTiles = hierarchy.leaves()
 
@@ -81,16 +85,22 @@ async function drawMap(){
 
     const tile = block.append('rect')
                         .attr('class','tile')
-                        .attr('fill',(d)=>{
-                            const {data : {category} } = d
-                            return colorData[category]
-                        })
+                        .attr('fill','white')
                         .attr('data-name',d => d['data']['name'])
                         .attr('data-category',d => d['data']['category'])
                         .attr('data-value',d => d['data']['value'])
-                        .attr('width', d => d['x1'] - d['x0'])
-                        .attr('height', d => d['y1'] - d['y0'])
-
+                        .attr('width', 0)
+                        .attr('height', 0)
+    
+    //Adding transition
+    tile.transition(updateTransition)
+        .attr('width', d => d['x1'] - d['x0'])
+        .attr('height', d => d['y1'] - d['y0'])
+        .attr('fill',(d)=>{
+            const {data : {category} } = d
+            return colorData[category]
+        })
+    //Adding a text to each block
     block.append('text')
         .text(d => d['data']['name'])
         .attr('x',0)                
@@ -119,7 +129,7 @@ async function drawMap(){
                                     if( i < 18) return `translate(${(i - 15 )* 150}, ${150})`
                                 })
                                 .attr('class','legend-element')
-
+    //adding rect elements 
     const legendRect = legendBlocks.append('rect')
                                     .attr('width',30)
                                     .attr('height',30)
@@ -127,26 +137,30 @@ async function drawMap(){
                                     .attr('x',(d,i) =>  0)
                                     .attr('y',(d,i) => 0 )
                                     .attr('class','legend-item')
-
+    //adding text to the legend blocks                             
     const textLegend = legendBlocks.append('text')
                                     .text((d,i) => Object.keys(colorData)[i] )
                                     .attr('x',45)
                                     .attr('y',20)
 
+    //adding transition to the legend 
 
-
-    
+    d3.select('#legend').transition(updateTransition)
+            .style('opacity', 1)
 
    //7) Set up Interactions
 
+    //adding interactions to the tiles
     tile.on("mouseenter", onMouseEnter)
         .on("mouseleave", onMouseLeave)
 
     function onMouseEnter(datum,index){
+        //setting the tooltip position
         const x = index.x0 + (index.x1 - index.x0)/2 ;
         const y = index.y0;
+
         const {data : {name,category,value} } = index;
-        console.info(index)
+
         //Updating tooltip styles
         tooltip.attr("data-year",index.Year)
                 .style('opacity',1)
