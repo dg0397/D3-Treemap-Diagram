@@ -91,15 +91,16 @@ async function drawMap(){
     block.append('text')
         .text(d => d['data']['name'])
         .attr('x',0)                
-        .attr('y',20)           
+        .attr('y',20)
+        .attr('height', d => d['y1'] - d['y0'])           
         
     //6)Draw Peripherals
 
     //select legeng element
     const legend = d3.select('#legend')
                         .append('svg')
-                        .attr('width', dimensions.width * .4)
-                        .attr('height', dimensions.height * .4)
+                        .attr('width', dimensions.width * .35)
+                        .attr('height', dimensions.height * .44)
     
     const legendBlocks = legend.selectAll('g')
                                 .data(Object.values(colorData))
