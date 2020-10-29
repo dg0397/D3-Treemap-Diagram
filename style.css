@@ -8,6 +8,7 @@ body{
     background-image: linear-gradient(260deg, #f45d51 0%, #942246 100%);
     padding: 1rem;
     width: 100vw;
+    width: 100%;
 }
 /*Main container*/
 .main{
@@ -25,6 +26,12 @@ header h1{
     color: white;
     font-size: 3rem;
 }
+header #description{
+    font-style: italic;
+    font-weight: 300;
+    text-align: center;
+    color: white;
+}
 /*Wrapper SVG*/
 #wrapper{
     margin: 3rem auto;
@@ -40,10 +47,13 @@ svg .tile{
     stroke: white;
     stroke-width: .25px;
 }
-
+svg .tile:hover{
+    stroke: #1c1c1c;
+    stroke-width: 1px;
+}
 svg .tile + text{
     font-style: italic;
-    font-weight: 300;
+    font-weight: 400;
     font-size: .8rem;
     display: block;
     white-space: nowrap;
@@ -57,7 +67,8 @@ svg .tile + text{
     height: auto;
     background-color: white;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1rem;
+    font-style: italic;
     padding: 1rem;
     border-radius: 10px;
     box-shadow: 5px 5px 10px #1c1c1c;
@@ -69,14 +80,13 @@ svg .tile + text{
 #tooltip::before{
     content: "▼";
     position: absolute;
-    bottom: -25px;
+    bottom: -14px;
     color: white;
 }
 #tooltip span{
     font-style: italic;
 }
 #legend{
-    
     display: flex;
     justify-items: center;
     align-items: center;
@@ -88,10 +98,15 @@ svg .tile + text{
 }
 #legend svg{
     padding: 1rem;
+    font-size: 1rem;
+    border: 2px solid #1c1c1c;
+}
+#legend svg rect{
+    stroke: #1c1c1c;
 }
 /*Footer*/
 footer{
-    margin: .5rem auto;
+    margin: 1rem auto .5rem auto;
 }
 footer p{
     text-align: center;

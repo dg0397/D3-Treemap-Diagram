@@ -28,7 +28,7 @@ async function drawMap(){
     //2) Create Chart Dimensions
 
     let dimensions = {
-        width: window.innerWidth * 0.9 <= 600 ? window.innerWidth * 0.9 : 1200,
+        width: window.innerWidth * 0.9 <= 600 ? window.innerWidth * 0.9 : 1100,
         height: 500,
     }
 
@@ -63,7 +63,10 @@ async function drawMap(){
                             .size([dimensions.width,dimensions.height])
 
     //5) Draw Data
-    
+    //selecting tooltip
+
+    const tooltip = d3.select('#tooltip');
+
     //drawing data
 
     createTreeMap(hierarchy)
@@ -99,9 +102,10 @@ async function drawMap(){
     //select legeng element
     const legend = d3.select('#legend')
                         .append('svg')
-                        .attr('width', dimensions.width * .35)
+                        .attr('width', dimensions.width * .4)
                         .attr('height', dimensions.height * .44)
-    
+
+    //adding legend
     const legendBlocks = legend.selectAll('g')
                                 .data(Object.values(colorData))
                                 .enter()
@@ -131,8 +135,35 @@ async function drawMap(){
 
 
 
-    //adding legend
+    
 
-    console.log(gamesTiles)
+   //7) Set up Interactions
+
+    tile.on("mouseenter", onMouseEnter)
+        .on("mouseleave", onMouseLeave)
+
+    function onMouseEnter(datum,index){
+        const x = index.x0 + (index.x1 - index.x0)/2 ;
+        const y = index.y0;
+        const {data : {name,category,value} } = index;
+        console.info(index)
+        //Updating tooltip styles
+        tooltip.attr("data-year",index.Year)
+                .style('opacity',1)
+                .style("transform",`translate(calc(-50% + ${x}px) , calc(-100% + ${y}px) )`)
+
+        //Updating tooltip information
+        tooltip.select("#name").text(`Name: ${name}`);
+        tooltip.select("#category").text(`Category: ${category}`);
+        tooltip.select("#value").text(`Value: ${value}`)
+
+        //adding attr data-value to the tooltip
+
+        tooltip.attr('data-value',value)
+    }
+
+    function onMouseLeave(datum,index){
+        tooltip.style('opacity',0)
+    }
 }
 drawMap()
